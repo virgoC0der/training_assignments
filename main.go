@@ -132,7 +132,6 @@ func showStudent(key string) {
 			line := k + ": " + v
 			fmt.Println(line)
 		}
-		return
 	}
 
 	if students, ok := studentNameMap[key]; ok {
@@ -156,12 +155,30 @@ func listStudent() {
 }
 
 func deleteStudent(args ...string) {
+    student, ok := studentIDMap[args[1]]
+    if !ok {
+        fmt.Println("id does not exist!", args[1])
+        return
+    }
+
 	if len(args) == 2 {
 		delete(studentIDMap, args[1])
+        for _, s := range studentNameMap[student["name"]] {
+            if s["id"] == args[1] {
+                studentNameMap[student["name"]] = append(studentNameMap[student["name"]][i:], studentNameMap[student["name"]][i+1:]...)
+            }
+        }        
 		return
 	}
 
+    // delete a field
 	if len(args) == 3 {
 		delete(studentIDMap[args[1]], args[2])
+        for _, s := range studentNameMap[student["name"]] {
+            if s["id"] == args[1] {
+                delete(s, args[2])
+            }
+        } 
 	}
 }
+
