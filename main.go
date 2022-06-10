@@ -19,13 +19,13 @@ Usage of this system:
     add an employee into the system, eg: add id [name]
     add 0001 jack 2022-06-05 security software-engineer
   mod
-    modify the employee info by id, eg: mod id [date:xxxx-xx-xx]
+    modify the employee info by id, eg: mod id [date:YYYY-MM-DD]
     mod id date:2022-06-06
   del
     del employee by id, eg: del id
     del 0001
   show
-    checkout employee info by id, eg: show id|[name:xxxxx]
+    checkout employee info by id, eg: show id|[name:alice]
     show name:jack
   list
     checkout all employees in the system, eg: list
@@ -155,30 +155,29 @@ func listStudent() {
 }
 
 func deleteStudent(args ...string) {
-    student, ok := studentIDMap[args[1]]
-    if !ok {
-        fmt.Println("id does not exist!", args[1])
-        return
-    }
-
-	if len(args) == 2 {
-		delete(studentIDMap, args[1])
-        for _, s := range studentNameMap[student["name"]] {
-            if s["id"] == args[1] {
-                studentNameMap[student["name"]] = append(studentNameMap[student["name"]][i:], studentNameMap[student["name"]][i+1:]...)
-            }
-        }        
+	student, ok := studentIDMap[args[1]]
+	if !ok {
+		fmt.Println("id does not exist!", args[1])
 		return
 	}
 
-    // delete a field
+	if len(args) == 2 {
+		delete(studentIDMap, args[1])
+		for i, s := range studentNameMap[student["name"]] {
+			if s["id"] == args[1] {
+				studentNameMap[student["name"]] = append(studentNameMap[student["name"]][i:], studentNameMap[student["name"]][i+1:]...)
+			}
+		}
+		return
+	}
+
+	// delete a field
 	if len(args) == 3 {
 		delete(studentIDMap[args[1]], args[2])
-        for _, s := range studentNameMap[student["name"]] {
-            if s["id"] == args[1] {
-                delete(s, args[2])
-            }
-        } 
+		for _, s := range studentNameMap[student["name"]] {
+			if s["id"] == args[1] {
+				delete(s, args[2])
+			}
+		}
 	}
 }
-
