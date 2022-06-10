@@ -40,17 +40,20 @@ func randLevel() bool {
 	return false
 }
 
+// Insert inserts new value into skip_list
 func (l *SkipList) Insert(value int, headNodeInsertPosition []*Node) {
 	node := &Node{
 		Value: value,
 	}
-	// 调表为空插入最底层
+	// insert into the bottom level when the skip_list is empty
 	if l.Level < 0 {
 		l.Level = 0
 		l.HeadNodeArr[0] = &Node{}
 		l.HeadNodeArr[0].Next = node
 		node.Prev = l.HeadNodeArr[0]
 	} else {
+		// if not empty, insert into every level
+		// insert into the bottom level
 		root := headNodeInsertPosition[0]
 		next := root.Next
 
@@ -90,6 +93,7 @@ func (l *SkipList) Insert(value int, headNodeInsertPosition []*Node) {
 	}
 }
 
+// Add adds new node to skip_list
 func (l *SkipList) Add(value int) {
 	if l.Exist(value) != nil {
 		return
@@ -131,6 +135,7 @@ func (l *SkipList) Add(value int) {
 	l.Insert(value, headNodeInsertPosition)
 }
 
+// Exist judges whether the value exists
 func (l *SkipList) Exist(value int) *Node {
 	// level < 0 represents no data
 	if l.Level < 0 {
