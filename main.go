@@ -27,6 +27,8 @@ Usage of this system:
     show name:jack
   list
     checkout all employees in the system, eg: list
+	if you want to sort by a key,
+	list name
   help
     show function that the system can do
   exit
@@ -56,7 +58,11 @@ func main() {
 				continue
 			}
 
-			id, _ := strconv.Atoi(textSlice[1])
+			id, err := strconv.Atoi(textSlice[1])
+			if err != nil {
+				fmt.Printf("id[%s] atoi err[%s]\n", textSlice[1], err)
+				continue
+			}
 			models.Add(id, "name", textSlice[2])
 		case "mod":
 			if len(textSlice) < 3 {
@@ -78,7 +84,11 @@ func main() {
 				continue
 			}
 
-			id, _ := strconv.Atoi(textSlice[1])
+			id, err := strconv.Atoi(textSlice[1])
+			if err != nil {
+				fmt.Printf("id[%s] atoi err[%s]\n", textSlice[1], err)
+				continue
+			}
 			info := models.Get(id)
 
 			for k, v := range info {
@@ -86,13 +96,14 @@ func main() {
 				fmt.Println(line)
 			}
 		case "list":
-			var key string
+			var key, value string
 			if len(textSlice) > 1 {
 				key = textSlice[1]
+				value = textSlice[2]
 			}
-			resultMaps := models.List(key)
-			for i, r := range resultMaps {
-				fmt.Println("---------------", i)
+			resultMaps := models.List(key, value)
+			for _, r := range resultMaps {
+				fmt.Println("---------------")
 				for k, v := range r {
 					line := k + ": " + v
 					fmt.Println(line)
@@ -105,7 +116,11 @@ func main() {
 				continue
 			}
 
-			id, _ := strconv.Atoi(textSlice[1])
+			id, err := strconv.Atoi(textSlice[1])
+			if err != nil {
+				fmt.Printf("id[%s] atoi err[%s]\n", textSlice[1], err)
+				continue
+			}
 			models.Delete(id)
 		case "help":
 			fmt.Println(usage)

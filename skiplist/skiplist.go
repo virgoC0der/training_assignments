@@ -54,7 +54,7 @@ func (l *SkipList) Insert(id int, headNodeInsertPosition []*Node, k, v string) {
 	// insert into the bottom level when the skip_list is empty
 	if l.Level < 0 {
 		l.Level = 0
-		l.HeadNodeArr[0] = &Node{}
+		l.HeadNodeArr[0] = &Node{Info: make(map[string]string)}
 		l.HeadNodeArr[0].Next = node
 		node.Prev = l.HeadNodeArr[0]
 	} else {
@@ -73,14 +73,14 @@ func (l *SkipList) Insert(id int, headNodeInsertPosition []*Node, k, v string) {
 		currentLevel := 1
 		for randLevel() && currentLevel <= l.Level+1 && currentLevel < MaxLevel {
 			if headNodeInsertPosition[currentLevel] == nil {
-				root = &Node{}
+				root = &Node{Info: make(map[string]string)}
 				l.HeadNodeArr[currentLevel] = root
 			} else {
 				root = headNodeInsertPosition[currentLevel]
 			}
 
 			next = root.Next
-			upNode := &Node{}
+			upNode := &Node{Info: node.Info}
 			upNode.ID = id
 			upNode.Down = node
 			upNode.Prev = root
