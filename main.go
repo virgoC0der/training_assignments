@@ -5,12 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
-)
 
-var (
-	studentIDMap   map[string]map[string]string
-	studentNameMap map[string][]map[string]string
+	"students/models"
 )
 
 const usage = `
@@ -36,8 +34,9 @@ Usage of this system:
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	studentIDMap = make(map[string]map[string]string)
-	studentNameMap = make(map[string][]map[string]string)
+
+	// init skip list
+	models.New()
 	for {
 		fmt.Print(">> ")
 		text, err := reader.ReadString('\n')
@@ -56,23 +55,49 @@ func main() {
 				fmt.Println(err)
 				continue
 			}
-			addStudent(textSlice[1], textSlice[2])
+
+			id, _ := strconv.Atoi(textSlice[1])
+			models.Add(id, "name", textSlice[2])
 		case "mod":
 			if len(textSlice) < 3 {
 				err = errors.New("illegal input")
 				fmt.Println(err)
 				continue
 			}
-			modStudent(textSlice[1], textSlice[2:]...)
+
+			id, err := strconv.Atoi(textSlice[1])
+			if err != nil {
+				models.UpdateByName(textSlice[1], textSlice[2:]...)
+				continue
+			}
+			models.UpdateByID(id, textSlice[2:]...)
 		case "show":
 			if len(textSlice) < 2 {
 				err = errors.New("illegal input")
 				fmt.Println(err)
 				continue
 			}
-			showStudent(textSlice[1])
+
+			id, _ := strconv.Atoi(textSlice[1])
+			info := models.Get(id)
+
+			for k, v := range info {
+				line := k + ": " + v
+				fmt.Println(line)
+			}
 		case "list":
-			listStudent()
+			var key string
+			if len(textSlice) > 1 {
+				key = textSlice[1]
+			}
+			resultMaps := models.List(key)
+			for i, r := range resultMaps {
+				fmt.Println("---------------", i)
+				for k, v := range r {
+					line := k + ": " + v
+					fmt.Println(line)
+				}
+			}
 		case "del":
 			if len(textSlice) < 2 {
 				err = errors.New("illegal input")
@@ -80,104 +105,12 @@ func main() {
 				continue
 			}
 
-			deleteStudent(textSlice...)
+			id, _ := strconv.Atoi(textSlice[1])
+			models.Delete(id)
 		case "help":
 			fmt.Println(usage)
 		default:
 			continue
-		}
-	}
-}
-
-func addStudent(id, name string) {
-	if _, ok := studentIDMap[id]; ok {
-		fmt.Println("student already exists")
-		return
-	}
-
-	studentIDMap[id] = make(map[string]string)
-	studentIDMap[id] = map[string]string{
-		"name": name,
-	}
-
-	if _, ok := studentNameMap[name]; !ok {
-		studentNameMap[name] = make([]map[string]string, 0)
-	}
-	studentNameMap[name] = append(studentNameMap[name], studentIDMap[id])
-}
-
-func modStudent(id string, args ...string) {
-	if _, ok := studentIDMap[id]; !ok {
-		fmt.Println("student does not exist")
-		return
-	}
-
-	for _, arg := range args {
-		kv := strings.Split(arg, ":")
-		if len(kv) < 2 {
-			continue
-		}
-		studentIDMap[id][kv[0]] = kv[1]
-	}
-
-	name := studentIDMap[id]["name"]
-	for i := 0; i < len(studentNameMap[name]); i++ {
-		studentNameMap[name][i] = studentIDMap[id]
-	}
-}
-
-func showStudent(key string) {
-	if student, ok := studentIDMap[key]; ok {
-		for k, v := range student {
-			line := k + ": " + v
-			fmt.Println(line)
-		}
-	}
-
-	if students, ok := studentNameMap[key]; ok {
-		for _, student := range students {
-			for k, v := range student {
-				line := k + ": " + v
-				fmt.Println(line)
-			}
-		}
-	}
-}
-
-func listStudent() {
-	for _, student := range studentIDMap {
-		fmt.Println("---------------")
-		for k, v := range student {
-			line := k + ": " + v
-			fmt.Println(line)
-		}
-	}
-}
-
-func deleteStudent(args ...string) {
-	student, ok := studentIDMap[args[1]]
-	if !ok {
-		fmt.Println("id does not exist!", args[1])
-		return
-	}
-
-	if len(args) == 2 {
-		delete(studentIDMap, args[1])
-		for i, s := range studentNameMap[student["name"]] {
-			if s["id"] == args[1] {
-				studentNameMap[student["name"]] = append(studentNameMap[student["name"]][i:], studentNameMap[student["name"]][i+1:]...)
-			}
-		}
-		return
-	}
-
-	// delete a field
-	if len(args) == 3 {
-		delete(studentIDMap[args[1]], args[2])
-		for _, s := range studentNameMap[student["name"]] {
-			if s["id"] == args[1] {
-				delete(s, args[2])
-			}
 		}
 	}
 }

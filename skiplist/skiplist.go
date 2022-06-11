@@ -1,17 +1,21 @@
 package skiplist
 
 import (
+	"fmt"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
 const MaxLevel = 7
 
 type Node struct {
-	Value int
-	Prev  *Node //
-	Next  *Node
-	Down  *Node
+	ID   int
+	Name string
+	Info map[string]string
+	Prev *Node
+	Next *Node
+	Down *Node
 }
 
 type SkipList struct {
@@ -40,11 +44,13 @@ func randLevel() bool {
 	return false
 }
 
-// Insert inserts new value into skip_list
-func (l *SkipList) Insert(value int, headNodeInsertPosition []*Node) {
+// Insert inserts new id into skip_list
+func (l *SkipList) Insert(id int, headNodeInsertPosition []*Node, k, v string) {
 	node := &Node{
-		Value: value,
+		ID:   id,
+		Info: make(map[string]string),
 	}
+	node.Info[k] = v
 	// insert into the bottom level when the skip_list is empty
 	if l.Level < 0 {
 		l.Level = 0
@@ -75,7 +81,7 @@ func (l *SkipList) Insert(value int, headNodeInsertPosition []*Node) {
 
 			next = root.Next
 			upNode := &Node{}
-			upNode.Value = value
+			upNode.ID = id
 			upNode.Down = node
 			upNode.Prev = root
 			upNode.Next = next
@@ -94,17 +100,18 @@ func (l *SkipList) Insert(value int, headNodeInsertPosition []*Node) {
 }
 
 // Add adds new node to skip_list
-func (l *SkipList) Add(value int) {
-	if l.Exist(value) != nil {
+func (l *SkipList) Add(id int, k, v string) {
+	if l.Get(id) != nil {
+		fmt.Println("id already exists!")
 		return
 	}
 
-	headNodeInsertPosition := make([]*Node, 0, MaxLevel)
+	headNodeInsertPosition := make([]*Node, MaxLevel)
 	if l.Level >= 0 {
 		level := l.Level
 		node := l.HeadNodeArr[level].Next
 		for node != nil && level >= 0 {
-			if node.Value > value {
+			if node.ID > id {
 				headNodeInsertPosition[level] = node.Prev
 				if node.Prev.Down == nil {
 					if level-1 >= 0 {
@@ -120,23 +127,41 @@ func (l *SkipList) Add(value int) {
 				continue
 			}
 
-			if node.Value < value {
+			if node.ID < id {
 				// if node's value is smaller than value and next node is nil,
 				// enter next level
 				if node.Next == nil {
 					headNodeInsertPosition[level] = node
+					level--
+					if level >= 0 {
+						node = l.HeadNodeArr[level].Next
+					}
+				} else {
+					node = node.Next
 				}
-			} else {
-				node = node.Next
 			}
 		}
 	}
 
-	l.Insert(value, headNodeInsertPosition)
+	l.Insert(id, headNodeInsertPosition, k, v)
 }
 
-// Exist judges whether the value exists
-func (l *SkipList) Exist(value int) *Node {
+func (l *SkipList) Update(id int, args ...string) {
+	node := l.Get(id)
+	if node == nil {
+		fmt.Println("id does not exist")
+		return
+	}
+
+	for i := 0; i < len(args); i += 2 {
+		node.Info[args[i]] = args[i+1]
+	}
+
+	return
+}
+
+// Get judges whether the id exists
+func (l *SkipList) Get(id int) *Node {
 	// level < 0 represents no data
 	if l.Level < 0 {
 		return nil
@@ -145,12 +170,12 @@ func (l *SkipList) Exist(value int) *Node {
 	level := l.Level
 	node := l.HeadNodeArr[level].Next
 	for node != nil {
-		if node.Value == value {
+		if node.ID == id {
 			return node
 		}
 
-		if node.Value > value {
-			// if node's value is bigger than value, should return last node and enter next level
+		if node.ID > id {
+			// if node's id is bigger than id, should return last node and enter next level
 			if node.Prev.Down == nil {
 				if level-1 >= 0 {
 					node = l.HeadNodeArr[level-1].Next
@@ -162,9 +187,9 @@ func (l *SkipList) Exist(value int) *Node {
 			}
 
 			level--
-		} else if node.Value < value {
+		} else if node.ID < id {
 			node = node.Next
-			// if node's value is smaller than value and next node is nil,
+			// if node's id is smaller than id and next node is nil,
 			// the level has already been searched, enter next level
 			if node == nil {
 				level--
@@ -178,9 +203,9 @@ func (l *SkipList) Exist(value int) *Node {
 	return nil
 }
 
-// Delete deletes the node which matches the value
-func (l *SkipList) Delete(value int) {
-	node := l.Exist(value)
+// Delete deletes the node which matches the id
+func (l *SkipList) Delete(id int) {
+	node := l.Get(id)
 	if node == nil {
 		return
 	}
@@ -194,4 +219,17 @@ func (l *SkipList) Delete(value int) {
 		}
 		node = node.Down
 	}
+}
+
+// List return all nodes' info
+func (l *SkipList) List() []map[string]string {
+	node := l.HeadNodeArr[0].Next
+	result := make([]map[string]string, 0)
+	for node != nil {
+		node.Info["id"] = strconv.Itoa(node.ID)
+		result = append(result, node.Info)
+		node = node.Next
+	}
+
+	return result
 }
