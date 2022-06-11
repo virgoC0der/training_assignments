@@ -101,7 +101,7 @@ func main() {
 				key = textSlice[1]
 				value = textSlice[2]
 			}
-			resultMaps := models.List(key, value)
+			resultMaps := models.List(key, value, textSlice[3])
 			for _, r := range resultMaps {
 				fmt.Println("---------------")
 				for k, v := range r {

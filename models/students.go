@@ -55,7 +55,7 @@ func Delete(id int) {
 	skipList.Delete(id)
 }
 
-func List(key, value string) []map[string]string {
+func List(key, value, sortKey string) []map[string]string {
 	studentList := skipList.List()
 	result := make([]map[string]string, 0, len(studentList))
 	if len(key) > 0 {
@@ -70,7 +70,7 @@ func List(key, value string) []map[string]string {
 			}
 		}
 		sort.Slice(result, func(i, j int) bool {
-			return result[i][key] < result[j][key]
+			return result[i][sortKey] < result[j][sortKey]
 		})
 
 		return result
