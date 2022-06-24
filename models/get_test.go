@@ -107,6 +107,21 @@ func TestList(t *testing.T) {
 					sortKey: "id",
 				},
 				{
+					list: []info{
+						{
+							id:   1,
+							name: "abc",
+						},
+						{
+							id:   2,
+							name: "abcd",
+						},
+					},
+					key:     "department",
+					value:   "xcentral",
+					sortKey: "id",
+				},
+				{
 					list:    []info{},
 					key:     "name",
 					value:   "abc",
@@ -116,6 +131,7 @@ func TestList(t *testing.T) {
 			excepts := []except{
 				{length: 2},
 				{length: 1},
+				{length: 0},
 				{length: 0},
 			}
 			for i, c := range cases {
