@@ -6,3 +6,6 @@ default: build
 build:
 	go build -o employee_management
 	chmod +x employee_management
+
+test:
+	go test -v ./models
