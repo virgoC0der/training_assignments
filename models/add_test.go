@@ -5,7 +5,7 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 
-	"students/common"
+	"students/lib"
 )
 
 func TestAdd(t *testing.T) {
@@ -43,7 +43,7 @@ func TestAdd(t *testing.T) {
 					err: nil,
 				},
 				{
-					err: common.ErrIDExist,
+					err: lib.ErrIDExist,
 				},
 			}
 

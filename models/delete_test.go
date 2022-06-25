@@ -1,10 +1,11 @@
 package models
 
 import (
-	"students/common"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
+
+	"students/lib"
 )
 
 func TestDelete(t *testing.T) {
@@ -33,7 +34,7 @@ func TestDelete(t *testing.T) {
 					err: nil,
 				},
 				{
-					err: common.ErrIDNotFound,
+					err: lib.ErrIDNotFound,
 				},
 			}
 

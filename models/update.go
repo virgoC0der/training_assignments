@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 	"strconv"
-	"students/common"
+	"students/lib"
 )
 
 func UpdateByID(id int, args ...string) error {
@@ -20,7 +20,7 @@ func UpdateByName(name string, args ...string) error {
 	}
 
 	if len(id) == 0 {
-		return common.ErrNameNotFound
+		return lib.ErrNameNotFound
 	}
 
 	idInt, err := strconv.Atoi(id)

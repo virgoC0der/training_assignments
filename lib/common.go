@@ -1,4 +1,4 @@
-package common
+package lib
 
 const Usage = `
 Usage of this system:

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"students/common"
+	"students/lib"
 	"students/models"
 )
 
@@ -121,7 +121,7 @@ func main() {
 				fmt.Printf("id[%d] not found, err: %s\n", id, err.Error())
 			}
 		case "help":
-			fmt.Println(common.Usage)
+			fmt.Println(lib.Usage)
 		default:
 			continue
 		}

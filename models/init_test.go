@@ -1,10 +1,11 @@
 package models
 
 import (
-	"students/skiplist"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
+
+	"students/skiplist"
 )
 
 func TestNew(t *testing.T) {

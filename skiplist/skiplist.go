@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
-	"students/common"
+	"students/lib"
 	"time"
 )
 
@@ -101,7 +101,7 @@ func (l *SkipList) Add(id int, k, v string) error {
 	node, err := l.Get(id)
 	if err == nil && node != nil {
 		fmt.Println("id already exists!")
-		return common.ErrIDExist
+		return lib.ErrIDExist
 	}
 
 	headNodeInsertPosition := make([]*Node, MaxLevel)
@@ -163,7 +163,7 @@ func (l *SkipList) Update(id int, args ...string) error {
 func (l *SkipList) Get(id int) (*Node, error) {
 	// level < 0 represents no data
 	if l.Level < 0 {
-		return nil, common.ErrIDNotFound
+		return nil, lib.ErrIDNotFound
 	}
 
 	level := l.Level
@@ -199,7 +199,7 @@ func (l *SkipList) Get(id int) (*Node, error) {
 		}
 	}
 
-	return nil, common.ErrIDNotFound
+	return nil, lib.ErrIDNotFound
 }
 
 // Delete deletes the node which matches the id

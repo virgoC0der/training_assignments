@@ -1,10 +1,11 @@
 package models
 
 import (
-	"students/common"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
+
+	"students/lib"
 )
 
 func TestGet(t *testing.T) {
@@ -44,7 +45,7 @@ func TestGet(t *testing.T) {
 				},
 				{
 					result: map[string]string{},
-					err:    common.ErrIDNotFound,
+					err:    lib.ErrIDNotFound,
 				},
 			}
 			for i, c := range cases {

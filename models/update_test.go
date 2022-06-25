@@ -1,10 +1,11 @@
 package models
 
 import (
-	"students/common"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
+
+	"students/lib"
 )
 
 func TestUpdateByID(t *testing.T) {
@@ -48,7 +49,7 @@ func TestUpdateByID(t *testing.T) {
 					err: nil,
 				},
 				{
-					err: common.ErrIDNotFound,
+					err: lib.ErrIDNotFound,
 				},
 				{
 					err: nil,
@@ -98,7 +99,7 @@ func TestUpdateByName(t *testing.T) {
 					err: nil,
 				},
 				{
-					err: common.ErrNameNotFound,
+					err: lib.ErrNameNotFound,
 				},
 			}
 

@@ -8,4 +8,4 @@ build:
 	chmod +x employee_management
 
 test:
-	go test -v ./models
+	go test -v ./test
