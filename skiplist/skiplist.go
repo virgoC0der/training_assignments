@@ -8,8 +8,10 @@ import (
 	"time"
 )
 
+// MaxLevel skip list's max level
 const MaxLevel = 7
 
+// Node skip list's node
 type Node struct {
 	ID   int
 	Name string
@@ -19,6 +21,7 @@ type Node struct {
 	Down *Node
 }
 
+// SkipList skip list data
 type SkipList struct {
 	Level       int
 	HeadNodeArr []*Node

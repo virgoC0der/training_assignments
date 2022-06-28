@@ -1,6 +1,7 @@
 package models
 
 import (
+	"students/skiplist"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestUpdateByID(t *testing.T) {
-	New()
+	skiplist.Init()
 	Add(1, "name", "abc")
 	Convey("update by id", t, func() {
 		Convey("success", func() {
@@ -64,7 +65,7 @@ func TestUpdateByID(t *testing.T) {
 }
 
 func TestUpdateByName(t *testing.T) {
-	New()
+	skiplist.Init()
 	Add(1, "name", "abc")
 	Convey("update member by name", t, func() {
 		Convey("success", func() {

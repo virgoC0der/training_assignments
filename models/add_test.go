@@ -1,6 +1,7 @@
 package models
 
 import (
+	"students/skiplist"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestAdd(t *testing.T) {
-	New()
+	skiplist.Init()
 	type info struct {
 		id   int
 		name string

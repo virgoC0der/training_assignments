@@ -1,9 +1,14 @@
 package models
 
-import "sort"
+import (
+	"sort"
 
+	"students/skiplist"
+)
+
+// Get finds a node from skip list
 func Get(id int) (map[string]string, error) {
-	node, err := skipList.Get(id)
+	node, err := skiplist.Get(id)
 	if err != nil {
 		return make(map[string]string), err
 	}
@@ -11,8 +16,9 @@ func Get(id int) (map[string]string, error) {
 	return node.Info, nil
 }
 
+// List lists all nodes from skip list
 func List(key, value, sortKey string) []map[string]string {
-	studentList := skipList.List()
+	studentList := skiplist.List()
 	result := make([]map[string]string, 0, len(studentList))
 	if len(key) > 0 {
 		for _, student := range studentList {

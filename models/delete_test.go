@@ -1,6 +1,7 @@
 package models
 
 import (
+	"students/skiplist"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestDelete(t *testing.T) {
-	New()
+	skiplist.Init()
 	Add(1, "name", "abc")
 	Convey("delete student", t, func() {
 		Convey("success", func() {

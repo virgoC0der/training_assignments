@@ -1,6 +1,7 @@
 package models
 
 import (
+	"students/skiplist"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	New()
+	skiplist.Init()
 	Add(1, "name", "abc")
 	Add(2, "name", "abcd")
 	Convey("test get a member", t, func() {
@@ -136,7 +137,7 @@ func TestList(t *testing.T) {
 				{length: 0},
 			}
 			for i, c := range cases {
-				New()
+				skiplist.Init()
 				for _, v := range c.list {
 					Add(v.id, "name", v.name)
 				}

@@ -1,21 +1,19 @@
-package models
+package skiplist
 
 import (
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-
-	"students/skiplist"
 )
 
-func TestNew(t *testing.T) {
+func TestInit(t *testing.T) {
 	Convey("test new a skip list", t, func() {
 		Convey("success", func() {
 			type ifRun struct {
 				run bool
 			}
 			type result struct {
-				sl *skiplist.SkipList
+				sl *SkipList
 			}
 			cases := []ifRun{
 				{
@@ -30,9 +28,9 @@ func TestNew(t *testing.T) {
 					sl: nil,
 				},
 				{
-					sl: &skiplist.SkipList{
+					sl: &SkipList{
 						Level:       -1,
-						HeadNodeArr: make([]*skiplist.Node, skiplist.MaxLevel),
+						HeadNodeArr: make([]*Node, MaxLevel),
 					},
 				},
 			}
