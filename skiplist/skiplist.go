@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"students/lib"
 	"time"
 )
 
+// MaxLevel skip list's max level
 const MaxLevel = 7
 
+// Node skip list's node
 type Node struct {
 	ID   int
 	Name string
@@ -18,6 +21,7 @@ type Node struct {
 	Down *Node
 }
 
+// SkipList skip list data
 type SkipList struct {
 	Level       int
 	HeadNodeArr []*Node
@@ -37,11 +41,7 @@ func New() *SkipList {
 // randLevel decides whether to join the next level by flipping a coin
 func randLevel() bool {
 	randNum := rand.Intn(2)
-	if randNum == 0 {
-		return true
-	}
-
-	return false
+	return randNum == 0
 }
 
 // Insert inserts new id into skip_list
@@ -100,10 +100,11 @@ func (l *SkipList) Insert(id int, headNodeInsertPosition []*Node, k, v string) {
 }
 
 // Add adds new node to skip_list
-func (l *SkipList) Add(id int, k, v string) {
-	if l.Get(id) != nil {
+func (l *SkipList) Add(id int, k, v string) error {
+	node, err := l.Get(id)
+	if err == nil && node != nil {
 		fmt.Println("id already exists!")
-		return
+		return lib.ErrIDExist
 	}
 
 	headNodeInsertPosition := make([]*Node, MaxLevel)
@@ -144,34 +145,35 @@ func (l *SkipList) Add(id int, k, v string) {
 	}
 
 	l.Insert(id, headNodeInsertPosition, k, v)
+	return nil
 }
 
-func (l *SkipList) Update(id int, args ...string) {
-	node := l.Get(id)
-	if node == nil {
+func (l *SkipList) Update(id int, args ...string) error {
+	node, err := l.Get(id)
+	if err != nil {
 		fmt.Println("id does not exist")
-		return
+		return err
 	}
 
 	for i := 0; i < len(args); i += 2 {
 		node.Info[args[i]] = args[i+1]
 	}
 
-	return
+	return nil
 }
 
 // Get judges whether the id exists
-func (l *SkipList) Get(id int) *Node {
+func (l *SkipList) Get(id int) (*Node, error) {
 	// level < 0 represents no data
 	if l.Level < 0 {
-		return nil
+		return nil, lib.ErrIDNotFound
 	}
 
 	level := l.Level
 	node := l.HeadNodeArr[level].Next
 	for node != nil {
 		if node.ID == id {
-			return node
+			return node, nil
 		}
 
 		if node.ID > id {
@@ -200,14 +202,14 @@ func (l *SkipList) Get(id int) *Node {
 		}
 	}
 
-	return nil
+	return nil, lib.ErrIDNotFound
 }
 
 // Delete deletes the node which matches the id
-func (l *SkipList) Delete(id int) {
-	node := l.Get(id)
-	if node == nil {
-		return
+func (l *SkipList) Delete(id int) error {
+	node, err := l.Get(id)
+	if err != nil {
+		return err
 	}
 
 	for node != nil {
@@ -219,11 +221,18 @@ func (l *SkipList) Delete(id int) {
 		}
 		node = node.Down
 	}
+
+	return nil
 }
 
 // List return all nodes' info
 func (l *SkipList) List() []map[string]string {
+	if l.HeadNodeArr[0] == nil {
+		return []map[string]string{}
+	}
+
 	node := l.HeadNodeArr[0].Next
+
 	result := make([]map[string]string, 0)
 	for node != nil {
 		node.Info["id"] = strconv.Itoa(node.ID)
